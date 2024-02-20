@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Virtual Try-On</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            text-align: center;
+        }
+
+        #image-upload {
+            margin: 20px auto;
+        }
+
+        #processed-image {
+            margin-top: 20px;
+            border: 1px solid black;
+            max-width: 500px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Virtual Try-On</h1>
+    <p>Upload an image of yourself to try on a virtual shirt!</p>
+    <form id="image-upload" method="POST" enctype="multipart/form-data">
+        <input type="file" name="image">
+        <button type="submit">Try On</button>
+    </form>
+    <img id="processed-image" src="">
+    <script>
+        const imageUploadForm = document.getElementById("image-upload");
+        const processedImage = document.getElementById("processed-image");
+
+        imageUploadForm.addEventListener("submit", (event) => {
+            event.preventDefault();
+
+            const formData = new FormData(imageUploadForm);
+            fetch("/virtual_tryon", {
+                method: "POST",
+                body: formData
+            })
+            .then(response => response.blob())
+            .then(blob => {
+                processedImage.src = URL.createObjectURL(blob);
+            })
+            .catch(error => {
+                console.error("Error:", error);
+                alert("An error occurred while processing the image.");
+            });
+        });
+    </script>
+</body>
+</html>
